@@ -78,28 +78,41 @@ function authenticateToken(req, res, next) {
 
 // --- API Routes ---
 
-// ✅ THIS IS THE MISSING ENDPOINT
+// ✅ THIS IS THE NEW SEARCH ENDPOINT
+// GET /api/v2/users/search?text=... (Search for users)
+app.get("/api/v2/users/search", authenticateToken, async (req, res) => {
+    try {
+        const { text } = req.query;
+        if (!text) {
+            return res.status(400).json({ success: false, error: "Search text is required" });
+        }
+
+        // Use a case-insensitive regular expression to find users
+        const users = await User.find({
+            name: { $regex: text, $options: 'i' }
+        });
+
+        res.json({ success: true, data: { users: users.map(u => u.toObject()) } });
+
+    } catch (error) {
+        console.error("Error searching for users:", error);
+        res.status(500).json({ success: false, error: "Server error during user search" });
+    }
+});
+
+
 // GET /api/v2/friendship/friends (Fetch all friends for a logged-in user)
 app.get("/api/v2/friendship/friends", authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
-
-        // Find all friendships where the current user is either user1 or user2
         const friendships = await Friendship.find({
             $or: [{ user1: userId }, { user2: userId }]
         });
-
-        // From the friendships, extract the ID of the *other* person
         const friendIds = friendships.map(friendship => {
             return friendship.user1.toString() === userId ? friendship.user2 : friendship.user1;
         });
-
-        // Find all User documents that match the extracted friend IDs
         const friends = await User.find({ '_id': { $in: friendIds } });
-
-        // The .toObject() transform will automatically handle converting _id to id
         res.json({ success: true, friends: friends.map(f => f.toObject()) });
-
     } catch (error) {
         console.error("Error fetching friends:", error);
         res.status(500).json({ success: false, error: "Server error fetching friends" });
@@ -113,11 +126,8 @@ app.post("/api/v2/comments", authenticateToken, async (req, res) => {
     const { content, postId } = req.body;
     const userId = req.user.id;
     const userName = req.user.name;
-
     const post = await Post.findById(postId);
-    if (!post) {
-      return res.status(404).json({ success: false, error: "Post not found" });
-    }
+    if (!post) return res.status(404).json({ success: false, error: "Post not found" });
     const newComment = { content, user: userId, likes: [] };
     post.comments.push(newComment);
     await post.save();
@@ -138,7 +148,6 @@ app.post("/api/v2/likes/toggle", authenticateToken, async (req, res) => {
   try {
     const { id, likeType } = req.body;
     const userId = req.user.id;
-
     if (likeType === "post") {
       const post = await Post.findById(id);
       if (!post) return res.status(404).json({ success: false, error: "Post not found" });
