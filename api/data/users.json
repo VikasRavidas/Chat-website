@@ -1,0 +1,32 @@
+[
+  {
+    "name": "John Doe",
+    "email": "b",
+    "password": "$2a$10$s/60d2YA3twFN5jtQRrUU.Zsvo0p4SdhoATIBr5eiPl9KqYmcWrV.",
+    "id": "13c018e0074f"
+  },
+  {
+    "name": "Jane Doe",
+    "email": "c",
+    "password": "$2a$10$BKtlBVSJOu1DvsEWNvDDL.Aq/b8gHuLwDM4d8KfthaPwHVBjRw.Wu",
+    "id": "bb505ad0e0fb"
+  },
+  {
+    "name": "Vikas Ravidas",
+    "email": "a",
+    "password": "$2a$10$dCMtxXnCSfAunmOoKlOJveVWR9OnvUSvzcg0WvdsJAfCy1K6Bucvy",
+    "id": "c6e599ae8927"
+  },
+  {
+    "id": "d5dfa3e84279",
+    "name": "Vikas",
+    "email": "123",
+    "password": "$2a$10$CHRoPjOKWkGSooQw1ZqIMu.y8KYWPLlc53Qj7E/WURdSHpbDAuexm"
+  },
+  {
+    "id": "ee38c612380a",
+    "name": "vikas",
+    "email": "vikas123",
+    "password": "$2a$10$AizWd1Pxdjc81kn2DwTice5bJMUxf7egaWvv6epluix0ecF7VsrDe"
+  }
+]
