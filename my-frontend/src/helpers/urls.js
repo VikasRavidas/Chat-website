@@ -1,4 +1,4 @@
-const API_ROOT = 'http://localhost:8000/api/v2';
+const API_ROOT = 'https://chat-website-backend-4y4d.onrender.com/api/v2';
 
 export const APIUrls = {
   editProfile: () => `${API_ROOT}/users/edit`,

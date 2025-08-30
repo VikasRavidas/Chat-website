@@ -15,12 +15,12 @@ const PORT = process.env.PORT;
 const SECRET_KEY = process.env.SECRET_KEY;
 const MONGO_URI = process.env.MONGO_URI;
 
-app.use(cors({}));
+app.use(cors());
 app.use(bodyParser.json());
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://10.109.2.28:3000"],
+    origin:"*",
     methods: ["GET", "POST"],
     credentials: true,
   },
