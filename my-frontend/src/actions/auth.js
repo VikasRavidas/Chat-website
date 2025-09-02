@@ -212,3 +212,31 @@ export function uploadProfilePicture(formData) {
     });
   };
 }
+
+export function fetchLoggedInUser() {
+  return (dispatch) => {
+    const url = APIUrls.fetchMe();
+    const token = getAuthTokenFromLocalStorage();
+
+    if (!token) {
+      dispatch(logoutUser());
+      return;
+    }
+
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        dispatch(authenticateUser(data.user));
+        return;
+      }
+      dispatch(logoutUser());
+    });
+  };
+}

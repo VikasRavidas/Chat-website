@@ -14,12 +14,13 @@ import Home from './Home';
 import Login from './Login';
 import Signup from './SignUp';
 import { jwtDecode } from 'jwt-decode';
-import { authenticateUser } from '../actions/auth';
+import { authenticateUser,fetchLoggedInUser} from '../actions/auth';
 import Settings from './Setting';
 
 import { useLocation } from 'react-router-dom';
 import UserProfile from './UserProfile';
 import { fetchUserFriends } from '../actions/friends';
+
 
 const PrivateRoute = ({ children, isLoggedin }) => {
   const location = useLocation();
@@ -42,44 +43,18 @@ class App extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.props.dispatch(fetchPosts());
+componentDidMount() {
+  // This part is correct and should stay
+  this.props.dispatch(fetchPosts());
 
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const user = jwtDecode(token);
-        const currentTime = Date.now() / 1000; // Convert to seconds
+  const token = localStorage.getItem('token');
 
-        if (user.exp < currentTime) {
-          // Token expired
-          console.warn('Token expired, logging out user...');
-          this.handleLogout();
-        } else {
-          // Token is still valid
-          this.props.dispatch(
-            authenticateUser({
-              id: user.id,
-              name: user.name,
-              email: user.email,
-            }),
-          );
-
-          // Auto logout when the token expires
-          const timeToExpire = (user.exp - currentTime) * 1000;
-          this.autoLogoutTimer = setTimeout(() => {
-            console.warn('Token expired automatically, logging out user...');
-            this.handleLogout();
-          }, timeToExpire);
-        }
-        // THIS LINE WAS REMOVED TO FIX THE RACE CONDITION
-        // this.props.dispatch(fetchUserFriends(user.id));
-      } catch (error) {
-        console.error('Invalid token:', error);
-        this.handleLogout();
-      }
-    }
+  // If a token exists, this single dispatch will fetch the fresh user data from the server.
+  // This replaces the entire old try...catch block.
+  if (token) {
+    this.props.dispatch(fetchLoggedInUser());
   }
+}
 
   // Logout function to clear token and redirect
   handleLogout = () => {

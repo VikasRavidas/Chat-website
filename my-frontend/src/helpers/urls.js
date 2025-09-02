@@ -16,4 +16,5 @@ export const APIUrls = {
   toggleLike: () => `${API_ROOT}/likes/toggle`,
    userSearch: (searchText) => `${API_ROOT}/users/search?text=${searchText}`,
    uploadDP: () => `${API_ROOT}/users/dp`,
+    fetchMe: () => `${API_ROOT}/users/me`,
 };

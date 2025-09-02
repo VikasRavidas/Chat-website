@@ -100,8 +100,21 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage: storage });
-// ... your other routes ...
+// ................. API   ROUTES  ... ...
 
+// GET /api/v2/users/me (Fetch the logged-in user's profile)
+app.get("/api/v2/users/me", authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, error: "User not found." });
+        }
+        res.json({ success: true, user: user.toObject() });
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+        res.status(500).json({ success: false, error: "Server error" });
+    }
+});
 // POST /api/v2/users/dp (Upload a user's profile picture)
 app.post("/api/v2/users/dp", authenticateToken, upload.single('profilePicture'), async (req, res) => {
     try {
