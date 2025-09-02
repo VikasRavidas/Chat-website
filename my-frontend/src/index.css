@@ -616,7 +616,95 @@ nav .nav-links ul li:hover {
   }
 }
 
+.right-nav {
+  position: relative; /* This is crucial for positioning the dropdown */
+}
+
+.profile-icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.guest-icon {
+  font-size: 2.5rem; /* Makes the guest icon bigger */
+  color: #fff;
+}
+
+#user-dp {
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+
+.user-profile {
+  padding-right: 10px; 
+  position: relative; /* This is the key - position relative to this container */
+}
+
+/* Update existing profile-dropdown */
+/* in index.css */
+.profile-dropdown {
+  position: absolute;
+  top: 50px;
+  left: 0;    /* ✅ Anchors to the left to prevent overflow */
+  background-color: white;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  min-width: 18px; /* ✅ Sets a minimum comfortable width */
+  max-width: 80vw;  /* ✅ Ensures it never exceeds screen width */
+  z-index: 1000; 
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.profile-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-dropdown ul li {
+  padding: 12px 20px;
+  font-size: 16px;
+  color: var(--text-dark);
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.profile-dropdown ul li:last-child {
+  border-bottom: none;
+}
+
+.profile-dropdown ul li:hover {
+  background-color: #f8fafc;
+}
+
+.profile-dropdown ul li a {
+  text-decoration: none;
+  color: inherit;
+  display: block; /* Makes the whole area clickable */
+}
 @media (max-width: 768px) {
+  .nav {
+  flex-direction: column; /* Stack the logo, search, and right-nav vertically */
+  align-items: flex-start; /* Align all items to the left */
+  gap: 1rem; /* Add some space between the stacked items */
+}
+
+.nav .search-container {
+  width: 100%; /* Make the search bar take up the full width */
+}
+
+.nav .right-nav {
+  width: 100%; /* Make the user/links section take up the full width */
+  justify-content: space-between; /* Keep user info on left and links on right */
+}
   .home {
     grid-template-columns: 1fr;
     padding: 0 1rem;
