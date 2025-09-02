@@ -159,7 +159,7 @@ class UserProfile extends Component {
     return (
       <div className="settings">
         <div className="img-container">
-          <img src={avatarUrl} alt="avatar" className='avatar'/>
+          <img src={avatarUrl} alt="avatar" className="profile-avatar"/>
         </div>
 
         <div className="field">

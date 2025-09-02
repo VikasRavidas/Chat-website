@@ -967,23 +967,28 @@ nav .nav-links ul li:hover {
     padding: 1.5rem;
   }
 
-  .settings {
-    padding: 70px; /* Reduce overall padding of the card */
-    margin-top: 30px auto 0 auto; /* Adjust top margin for smaller screens */
-  }
+  /* Settings Page Avatar - Enhanced */
+.settings .profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e2e8f0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
 
-  /* Target the profile icon container or the image directly */
-  .settings img.profile-avatar { /* Assuming your avatar image has a class like profile-avatar */
-    width: 80px; /* Reduce avatar size */
-    height: 80px;
-    margin-bottom: 15px; /* Adjust spacing below avatar */
-  }
+.settings .profile-avatar:hover {
+  transform: scale(1.05);
+}
 
-  /* If the icon is an SVG or font icon (like FaUserCircle in some cases) */
-  .settings .profile-icon { /* Assuming your icon has a class like profile-icon */
-    font-size: 5rem; /* Adjust font size for icon */
-    margin-bottom: 15px;
-  }
+/* Ensure the container doesn't interfere */
+.settings .img-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
 
   .settings h3 { /* If you have a heading for Name/Email */
     font-size: 1rem; /* Reduce heading size */

@@ -103,7 +103,6 @@ class Settings extends Component {
               src={previewUrl}
               alt="user-dp"
               className="profile-avatar"
-              title="Click to change picture"
             />
           </label>
           <input
