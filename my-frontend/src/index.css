@@ -306,6 +306,7 @@ code {
   color: var(--text-dark);
   border-radius: 5px;
 }
+
 .sidebar-nav li a:hover {
    background-color: #f1f5f9; /* A softer, modern hover color */
   transform: translateX(4px); /* Slight movement on hover */
@@ -318,10 +319,16 @@ code {
   border-radius: 50%;
   margin-right: 12px;
 }
+/* in index.css */
 .sidebar-nav li a span {
-  font-weight: 500; /* Make the name slightly bolder */
-  color: var(--text-dark); /* Ensure consistent text color */
+  font-weight: 500;
+  color: var(--text-dark);
+  /* ✅ Add these three lines to prevent text overflow */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 .sidebar-nav li a:hover span {
     color: var(--primary-color);
 }
@@ -596,19 +603,21 @@ nav .nav-links ul li:hover {
 }
 
 /* SETTINGS and USERPROFILE */
+/* in index.css */
 .settings {
-  display: inline-flex;
+  display: flex; /* Changed from inline-flex to flex */
   flex-direction: column;
   background: #fff;
   padding: 30px;
   border-radius: var(--radius-md);
-  margin-top: 50px;
-  margin-left: 30px;
   width: 40%;
   box-shadow: var(--shadow-md);
   transition: var(--transition);
   overflow: hidden;
+  /* ✅ FIX: This centers the card on the page */
+  margin: 50px auto 0 auto;
 }
+
 .settings:hover {
   box-shadow: var(--shadow-md);
 }
@@ -875,6 +884,16 @@ nav .nav-links ul li:hover {
   flex: 1; /* Let the logo container fill the available space */
 }
 
+/* in index.css */
+
+/* Add this new rule to fix overflowing text in the profile card */
+.settings .field {
+  /* This is the preferred property for allowing long words to wrap */
+  overflow-wrap: break-word;
+
+  /* This is a slightly more aggressive property that also works well for emails */
+  word-break: break-word;
+}
 @media (max-width: 768px) {
   .desktop-search {
     display: none; /* Hide the desktop search bar on mobile */
@@ -891,9 +910,10 @@ nav .nav-links ul li:hover {
   }
 
   /* ✅ NEW: Reduce padding on list items for a tighter look */
-  .sidebar-nav li a {
-    padding: 0.2rem 0.1rem;
-  }
+ /* in index.css inside the @media block */
+.sidebar-nav li a {
+  padding: 0.2rem 0.1rem;
+}
 
   /* ✅ NEW: Make avatars smaller */
   .sidebar-nav li img {
@@ -924,5 +944,34 @@ nav .nav-links ul li:hover {
   .login-form {
     width: 90%;
     padding: 1.5rem;
+  }
+
+  .settings {
+    padding: 70px; /* Reduce overall padding of the card */
+    margin-top: 30px auto 0 auto; /* Adjust top margin for smaller screens */
+  }
+
+  /* Target the profile icon container or the image directly */
+  .settings img.profile-avatar { /* Assuming your avatar image has a class like profile-avatar */
+    width: 80px; /* Reduce avatar size */
+    height: 80px;
+    margin-bottom: 15px; /* Adjust spacing below avatar */
+  }
+
+  /* If the icon is an SVG or font icon (like FaUserCircle in some cases) */
+  .settings .profile-icon { /* Assuming your icon has a class like profile-icon */
+    font-size: 5rem; /* Adjust font size for icon */
+    margin-bottom: 15px;
+  }
+
+  .settings h3 { /* If you have a heading for Name/Email */
+    font-size: 1rem; /* Reduce heading size */
+    margin-bottom: 10px;
+   
+  }
+
+  .settings p { /* If Name/Email are in <p> tags */
+    font-size: 0.95rem; /* Reduce text size */
+    line-height: 1.4;
   }
 }
