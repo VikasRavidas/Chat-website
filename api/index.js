@@ -116,7 +116,7 @@ app.post("/api/v2/users/dp", authenticateToken, upload.single('profilePicture'),
 
         // Update the user's avatar field with the path of the uploaded file
        user.avatar = req.file.path.replace(/\\/g, "/"); // Normalizes path to use forward slashes
-        
+       await user.save(); 
         // Return a success response with the updated user info
         res.json({ 
             success: true, 
@@ -377,6 +377,21 @@ app.post("/api/v2/posts/create", authenticateToken, async (req, res) => {
     }
 });
 
+// in index.js
+
+// ✅ ADD THIS TEMPORARY ROUTE FOR DEBUGGING
+app.get("/api/v2/health-check", (req, res) => {
+  res.status(200).json({ 
+    status: "ok", 
+    message: "Deployment is live!", 
+    timestamp: new Date() 
+  });
+});
+
+// --- Start Server ---
+server.listen(PORT, () => {
+  // ...
+});
 // --- Start Server ---
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
