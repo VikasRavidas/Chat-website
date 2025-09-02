@@ -232,11 +232,120 @@ code {
 .nav {
   display: flex;
   background: #6200ee;
-  box-shadow: var(--shadow-md);
-  padding: 0.75rem 2rem;
+  justify-content: space-between; /* This creates the 3-part space */
   align-items: center;
-  justify-content: space-between;
+  padding: 0.5rem 1rem; /* Adjust padding as needed */
+  flex-wrap: wrap;
 }
+.nav-left, .nav-right {
+  display: flex;
+  align-items: center;
+  flex: 1; /* Distribute space */
+}
+
+.nav-center {
+  flex: 2; /* Give the logo more space */
+  display: flex;
+  justify-content: center;
+}
+
+.nav-right {
+  justify-content: flex-end; /* Push content to the right */
+}
+
+
+/* ✅ NEW: Hamburger Menu Icon Style */
+.hamburger-menu {
+  font-size: 1.8rem;
+  color: white;
+  cursor: pointer;
+}
+
+/* ✅ NEW: Sidebar Styles */
+.sidebar-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px; /* Width of the sidebar */
+  height: 100%;
+  background: white;
+  z-index: 2000; /* Must be on top */
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  transform: translateX(-100%); /* Hidden by default */
+  transition: transform 0.3s ease-in-out;
+  padding: 1rem;
+}
+
+.sidebar-nav.open {
+  transform: translateX(0); /* Slides it into view */
+}
+
+/* Styling for the content inside the sidebar */
+.sidebar-nav h3 {
+  font-size: 1.25rem; /* Make the title bigger */
+  font-weight: 600;
+  color: var(--text-dark);
+  padding: 1.5rem; /* Add more padding */
+  margin: 0;
+  border-bottom: 1px solid #e2e8f0; /* Use a softer border color */
+}
+
+.sidebar-nav ul {
+  padding: 0.5rem; /* Add some padding around the entire list */
+  flex-grow: 1; /* Allow the list to fill available space */
+  overflow-y: auto; /* Make only the list scrollable, not the header */
+}
+
+.sidebar-nav li a {
+  display: flex;
+  align-items: center;
+   padding: 0.75rem 1rem; /* Increase padding for more breathing room */
+  margin-bottom: 0.25rem; /* Add a small space between items */
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  color: var(--text-dark);
+  border-radius: 5px;
+}
+.sidebar-nav li a:hover {
+   background-color: #f1f5f9; /* A softer, modern hover color */
+  transform: translateX(4px); /* Slight movement on hover */
+  color: var(--primary-color);
+}
+.sidebar-nav li img {
+  width: 35px;
+  height: 35px;
+  border: 2px solid #e2e8f0;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+.sidebar-nav li a span {
+  font-weight: 500; /* Make the name slightly bolder */
+  color: var(--text-dark); /* Ensure consistent text color */
+}
+.sidebar-nav li a:hover span {
+    color: var(--primary-color);
+}
+
+
+/* 8. "No friends to show" Message */
+.no-friends-sidebar {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-light);
+}
+
+
+/* ✅ NEW: Overlay for background dimming */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1999; /* Just below the sidebar */
+}
+
 .logo {
   font-weight: 700;
   color: var(--primary-color);
@@ -353,7 +462,7 @@ nav .nav-links ul li:hover {
 .home {
   display: grid;
   grid-template-columns: 1fr 300px;
-  gap: 2rem;
+  gap: 1rem;
   max-width: 1200px;
   margin: 2rem auto;
   padding: 0 1rem;
@@ -648,8 +757,9 @@ nav .nav-links ul li:hover {
 /* in index.css */
 .profile-dropdown {
   position: absolute;
-  top: 50px;
-  left: 0;    /* ✅ Anchors to the left to prevent overflow */
+  top: 55px;
+  left: auto;
+  right:0 ;   /* ✅ Anchors to the left to prevent overflow */
   background-color: white;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
@@ -658,59 +768,156 @@ nav .nav-links ul li:hover {
   z-index: 1000; 
   border: 1px solid #e2e8f0;
   overflow: hidden;
+  padding: 0;
   animation: fadeIn 0.2s ease-out;
 }
 
 .profile-dropdown ul {
   list-style: none;
-  padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
+  padding: 0.5rem;
+}
+.dropdown-header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+
 }
 
-.profile-dropdown ul li {
-  padding: 12px 20px;
-  font-size: 16px;
+.dropdown-header .user-name {
+  display: block;
+  font-weight: 600;
   color: var(--text-dark);
-  cursor: pointer;
-  border-bottom: 1px solid #f1f5f9;
 }
 
-.profile-dropdown ul li:last-child {
-  border-bottom: none;
+.dropdown-header .user-email {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-light);
 }
 
-.profile-dropdown ul li:hover {
-  background-color: #f8fafc;
-}
+/* in index.css */
 
-.profile-dropdown ul li a {
+/* --- REVISED Dropdown List Item Styles --- */
+
+.profile-dropdown ul li > a,
+.profile-dropdown ul li > .logout-button {
+  display: flex;
+  align-items: center;
+  width: 100%; /* Ensure they fill the li */
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
   text-decoration: none;
+  color: var(--text-dark);
+  transition: 0.2s ease;
+  gap: 0.75rem; /* Use gap for spacing between icon and text */
+}
+
+/* Make the button look like a regular menu item, not a browser button */
+.logout-button {
+  background: none;
+  border: none;
+  font-family: inherit; /* Use the same font as the rest of the site */
+  font-size: inherit;
+  cursor: pointer;
+  text-align: left; /* Align text to the left */
+}
+
+/* The hover effect now targets the clickable elements */
+.profile-dropdown ul li > a:hover,
+.profile-dropdown ul li > .logout-button:hover {
+  background-color: #f8fafc;
+  color: var(--primary-color);
+}
+
+/* The icon style for alignment and color */
+.profile-dropdown ul li svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: var(--text-light);
+  transition: 0.2s ease;
+}
+
+/* Ensure the icon inherits the new color on hover */
+.profile-dropdown ul li > a:hover svg,
+.profile-dropdown ul li > .logout-button:hover svg {
   color: inherit;
-  display: block; /* Makes the whole area clickable */
 }
+
+/* ✅ NEW: This will contain the top row of icons */
+.nav-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* ✅ NEW: By default, show desktop search and hide mobile */
+.mobile-search {
+  display: none;
+}
+.desktop-search {
+  display: flex; /* Or whatever its default is */
+}
+
+.nav.logged-out .nav-top-row {
+  justify-content: space-between; /* This keeps the guest icon on the right */
+}
+
+/* Hide the empty left container that pushes the logo to the center */
+.nav.logged-out .nav-left {
+  display: none;
+}
+
+/* Allow the logo's container to align left instead of centering */
+.nav.logged-out .nav-center {
+  justify-content: flex-start;
+  flex: 1; /* Let the logo container fill the available space */
+}
+
 @media (max-width: 768px) {
-  .nav {
-  flex-direction: column; /* Stack the logo, search, and right-nav vertically */
-  align-items: flex-start; /* Align all items to the left */
-  gap: 1rem; /* Add some space between the stacked items */
-}
+  .desktop-search {
+    display: none; /* Hide the desktop search bar on mobile */
+  }
 
-.nav .search-container {
-  width: 100%; /* Make the search bar take up the full width */
-}
+  .sidebar-nav {
+    width: 50vw;
+  }
 
-.nav .right-nav {
-  width: 100%; /* Make the user/links section take up the full width */
-  justify-content: space-between; /* Keep user info on left and links on right */
-}
+  /* ✅ NEW: Reduce header size and padding */
+  .sidebar-nav h3 {
+    font-size: 1rem;
+    padding: 0.1rem;
+  }
+
+  /* ✅ NEW: Reduce padding on list items for a tighter look */
+  .sidebar-nav li a {
+    padding: 0.2rem 0.1rem;
+  }
+
+  /* ✅ NEW: Make avatars smaller */
+  .sidebar-nav li img {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* ✅ NEW: Reduce friend name font size */
+  .sidebar-nav li a span {
+    font-size: 0.9rem;
+  }
+  .mobile-search {
+    display: flex; /* Show the mobile search bar */
+    width: 100%;
+    margin-top: 10px; /* Add space below the top row */
+  }
+
   .home {
     grid-template-columns: 1fr;
-    padding: 0 1rem;
+    padding: 0 0.5rem;
   }
 
   .friends-list {
+    display: none;
     margin-left: 0;
   }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import image from '../components/img/images.png';
+
 function FriendsListItem(friend) {
   console.log('friend in FriendsList: ', friend);
   console.log('friend id in FriendsList: ', friend.friend.id);

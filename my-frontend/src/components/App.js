@@ -101,7 +101,9 @@ class App extends React.Component {
     return (
       <Router>
         <div>
-          <Navbar user={auth.user} />
+          <Navbar user={auth.user} 
+          friends={this.props.friends}
+          />
           <Routes>
             <Route
               path="/"
