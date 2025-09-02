@@ -8,6 +8,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+const path = require("path");
+const multer = require("multer");
 // --- Basic Setup ---
 const app = express();
 const server = http.createServer(app);
@@ -17,6 +19,8 @@ const MONGO_URI = process.env.MONGO_URI;
 
 app.use(cors());
 app.use(bodyParser.json());
+// ... after app.use(bodyParser.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const io = new Server(server, {
   cors: {
@@ -25,6 +29,7 @@ const io = new Server(server, {
     credentials: true,
   },
 });
+
 
 // --- MongoDB Connection ---
 mongoose.connect(MONGO_URI)
@@ -37,6 +42,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  avatar: { type: String, default: null }, // Add this line
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
@@ -76,8 +82,99 @@ function authenticateToken(req, res, next) {
     }
 }
 
+// --- Multer Configuration ---
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/avatars/'); // The folder where files will be saved
+  },
+  filename: function (req, file, cb) {
+    // Create a unique filename to avoid conflicts
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
 // --- API Routes ---
 
+// --- API Routes ---
+
+// ... your other routes ...
+
+// POST /api/v2/users/dp (Upload a user's profile picture)
+app.post("/api/v2/users/dp", authenticateToken, upload.single('profilePicture'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, error: "No file was uploaded." });
+        }
+
+        // Find the user by ID from the authenticated token
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, error: "User not found." });
+        }
+
+        // Update the user's avatar field with the path of the uploaded file
+       user.avatar = req.file.path.replace(/\\/g, "/"); // Normalizes path to use forward slashes
+        
+        // Return a success response with the updated user info
+        res.json({ 
+            success: true, 
+            message: "Profile picture updated successfully.", 
+            user: user.toObject() 
+        });
+
+    } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        res.status(500).json({ success: false, error: "Server error during file upload" });
+    }
+});
+
+// in index.js
+
+// ... after your app.post("/api/v2/users/dp", ...) route
+
+// POST /api/v2/users/edit (Edit a user's name/password)
+app.post("/api/v2/users/edit", authenticateToken, async (req, res) => {
+    try {
+        const { name, password, confirmPassword } = req.body;
+        const userId = req.user.id;
+
+        // Find the user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, error: "User not found." });
+        }
+
+        // Update the name
+        user.name = name;
+
+        // If a new password is provided and it matches the confirmation, update it
+        if (password && confirmPassword) {
+            if (password !== confirmPassword) {
+                return res.status(400).json({ success: false, error: "Passwords do not match." });
+            }
+            // Hash the new password before saving
+            user.password = bcrypt.hashSync(password, 10);
+        }
+
+        // Save the updated user
+        await user.save();
+
+        res.json({
+            success: true,
+            message: "Profile updated successfully.",
+            user: user.toObject()
+        });
+
+    } catch (error) {
+        console.error("Error updating user profile:", error);
+        res.status(500).json({ success: false, error: "Server error during profile update" });
+    }
+});
+
+
+// ... your other routes like /api/v2/users/search ...
 // ✅ THIS IS THE NEW SEARCH ENDPOINT
 // GET /api/v2/users/search?text=... (Search for users)
 app.get("/api/v2/users/search", authenticateToken, async (req, res) => {

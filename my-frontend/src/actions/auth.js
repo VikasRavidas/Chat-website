@@ -184,3 +184,31 @@ export function ClearSearch() {
     type: CLEAR_SEARCH,
   };
 }
+
+export function uploadProfilePicture(formData) {
+  console.log("got image upload data: ",formData);
+  return (dispatch) => {
+    const url = APIUrls.uploadDP();
+    const token = getAuthTokenFromLocalStorage();
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        // DO NOT set 'Content-Type'. The browser sets it automatically
+        // for FormData, including the required boundary.
+      },
+      body: formData,
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        // Dispatch success action to update the user in the Redux store
+        dispatch(editUserSuccesful(data.user));
+        return;
+      }
+      // Dispatch failure action
+      dispatch(editUserFailed(data.error));
+    });
+  };
+}
