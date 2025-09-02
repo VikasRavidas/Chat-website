@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-
+const fs = require('fs');
 const path = require("path");
 const multer = require("multer");
 // --- Basic Setup ---
@@ -83,27 +83,29 @@ function authenticateToken(req, res, next) {
 }
 
 // --- Multer Configuration ---
+const uploadDir = 'uploads/avatars/';
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log('Created uploads directory:', uploadDir);
+}
+
+// Your existing multer configuration remains the same
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/avatars/'); // The folder where files will be saved
+    cb(null, 'uploads/avatars/');
   },
   filename: function (req, file, cb) {
-    // Create a unique filename to avoid conflicts
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
-
 const upload = multer({ storage: storage });
-// --- API Routes ---
-
-// --- API Routes ---
-
 // ... your other routes ...
 
 // POST /api/v2/users/dp (Upload a user's profile picture)
 app.post("/api/v2/users/dp", authenticateToken, upload.single('profilePicture'), async (req, res) => {
     try {
+      console.log("File received:", req.file);
         if (!req.file) {
             return res.status(400).json({ success: false, error: "No file was uploaded." });
         }
@@ -323,7 +325,9 @@ app.post("/api/v2/users/login", async (req, res) => {
         const user = await User.findOne({ email });
         if (user && bcrypt.compareSync(password, user.password)) {
             const token = jwt.sign({ id: user._id, name: user.name, email: user.email }, SECRET_KEY, { expiresIn: "1h" });
-            res.json({ success: true, message: "Login successful", token, user: { id: user._id, name: user.name, email: user.email } });
+            res.json({ success: true, message: "Login successful", token, user: { id: user._id, name: user.name, email: user.email,
+            avatar: user.avatar
+             } });
         } else {
             res.status(401).json({ success: false, error: "Invalid email or password" });
         }

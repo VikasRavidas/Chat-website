@@ -62,7 +62,10 @@ class Settings extends Component {
     const formData = new FormData();
     // 'profilePicture' MUST match the name in the backend route
     formData.append('profilePicture', file);
-
+    for (let pair of formData.entries()) {
+    console.log(pair[0] + ': ' + pair[1]);
+  }
+    console.log("formdata before dispatch: ",formData);
     this.props.dispatch(uploadProfilePicture(formData));
 
     // After dispatching, reset the file state to hide the save/cancel buttons
