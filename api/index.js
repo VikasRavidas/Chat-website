@@ -309,8 +309,8 @@ app.get("/api/v2/user/:id", async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ success: false, error: "Invalid user ID format" });
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ success: false, error: "User not found" });
-    res.json({ success: true, user: { id: user._id, name: user.name, email: user.email,avatar:use.avatar } });
-    
+    res.json({ success: true, user: { id: user._id, name: user.name, email: user.email,avatar:user.avatar } });
+
   } catch (error) {
     console.error("Error fetching user profile:", error);
     res.status(500).json({ success: false, error: "Server error" });
