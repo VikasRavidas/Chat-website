@@ -25,35 +25,51 @@ export function loginSuccess(user) {
   return { type: LOGIN_SUCCESS, user }; // ✅ Corrected to return user
 }
 
+function fetchWithTimeout(url, options, timeout = 10000) {
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Request timeout')), timeout)
+    )
+  ]);
+}
+
 export function login(email, password) {
   return (dispatch) => {
     dispatch(startLogin());
-
-    fetch(APIUrls.login(), {
+    
+    fetchWithTimeout(APIUrls.login(), {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json', // ✅ Fixed to send JSON
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password },10000),
     })
-      .then(async (response) => {
+    .then(async (response) => {
+      if (!response.ok) {
         const data = await response.json();
-        console.log('Response data', data);
-        if (!response.ok) {
-          throw new Error(data.error || 'Invalid email or password');
-        }
-        const u = data.token;
-        if (u) {
-          localStorage.setItem('token', u);
-          console.log('token: ', u);
-        }
-        dispatch(loginSuccess(data.user));
-      })
-      .catch((error) => {
-        dispatch(loginFailed(error.message));
-      });
+        throw new Error(data.error || `HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('Response data', data);
+      
+      const token = data.token;
+      if (token) {
+        localStorage.setItem('token', token);
+        console.log('token: ', token);
+      }
+      
+      dispatch(loginSuccess(data.user));
+    })
+    .catch((error) => {
+      console.error('Login error:', error);
+      dispatch(loginFailed(error.message || 'Network error, please try again!'));
+    });
   };
 }
+
 
 export function startSignup() {
   return { type: SIGNUP_START };

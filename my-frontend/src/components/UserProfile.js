@@ -152,10 +152,14 @@ class UserProfile extends Component {
     // const { id } = this.props.params;
     // console.log('curr userid: ', id); //id of the friends showing on clicking profile photos
     // console.log('user id: ', user.id); //id of the friends showing on clicking profile photos
+     const API_ROOT_URL = 'https://chat-website-backend-4y4d.onrender.com';
+   const avatarUrl = user.avatar 
+    ? `${API_ROOT_URL}/${user.avatar.replace(/\\/g, '/')}` 
+    : image;
     return (
       <div className="settings">
         <div className="img-container">
-          <img src={image} alt="user-dp" />
+          <img src={avatarUrl} alt="avatar" className='avatar'/>
         </div>
 
         <div className="field">

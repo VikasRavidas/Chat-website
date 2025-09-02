@@ -14,7 +14,7 @@ class Settings extends Component {
 
     // ✅ Correctly get the user from props to initialize state
     const { user } = this.props.auth;
-
+    console.log("user of setting: ",user);
     // ✅ Correctly initialize all state properties
     this.state = {
       // User profile fields
@@ -27,10 +27,10 @@ class Settings extends Component {
       file: null,
       previewUrl: user.avatar
         ? `${API_ROOT_URL}/${user.avatar.replace(/\\/g, '/')}`
-        : 'https://cdn-icons-png.flaticon.com/512/149/149071.png', // A generic default avatar
+        : image, 
       originalUrl: user.avatar
         ? `${API_ROOT_URL}/${user.avatar.replace(/\\/g, '/')}`
-        : 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+        : image,
     };
   }
 

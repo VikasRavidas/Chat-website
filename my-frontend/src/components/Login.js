@@ -32,6 +32,18 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+  // Clear any existing loading state when component mounts
+  dispatch(clearAuthState());
+  
+  // Cleanup function to reset loading state if component unmounts during login
+  return () => {
+    if (inProgress) {
+      dispatch(clearAuthState());
+    }
+  };
+}, [dispatch]);
+
   return (
     <form className="login-form">
       <span className="login-signup-header">Log In</span>

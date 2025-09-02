@@ -17,7 +17,21 @@ const PORT = process.env.PORT;
 const SECRET_KEY = process.env.SECRET_KEY;
 const MONGO_URI = process.env.MONGO_URI;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://chat-website-khaki.vercel.app',
+    'http://localhost:3000', // For local development
+    'http://localhost:3001'  // Alternative local port
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+}));
+
+// Add explicit OPTIONS handler for preflight requests
+app.options('*', cors());
+
 app.use(bodyParser.json());
 // ... after app.use(bodyParser.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -115,6 +129,7 @@ app.get("/api/v2/users/me", authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, error: "Server error" });
     }
 });
+
 // POST /api/v2/users/dp (Upload a user's profile picture)
 app.post("/api/v2/users/dp", authenticateToken, upload.single('profilePicture'), async (req, res) => {
     try {
@@ -294,7 +309,8 @@ app.get("/api/v2/user/:id", async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ success: false, error: "Invalid user ID format" });
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ success: false, error: "User not found" });
-    res.json({ success: true, user: { id: user._id, name: user.name, email: user.email } });
+    res.json({ success: true, user: { id: user._id, name: user.name, email: user.email,avatar:use.avatar } });
+    
   } catch (error) {
     console.error("Error fetching user profile:", error);
     res.status(500).json({ success: false, error: "Server error" });

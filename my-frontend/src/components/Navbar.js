@@ -11,6 +11,8 @@ import { FiSettings, FiLogOut, FiLogIn, FiUserPlus } from 'react-icons/fi';
 import gif from './img/chat_gif.gif';
 import images from './img/images.png';
 
+const API_ROOT_URL = 'https://chat-website-backend-4y4d.onrender.com';
+
 const Navbar = (props) => {
   // State to manage the dropdown menu's visibility
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,7 +62,7 @@ const Navbar = (props) => {
                 onClick={handleClearSearch}
               >
                 <Link to={`/user/${user.id}`}>
-                  <img src={images} alt="user-dp" />
+                  <img src={user.avatar ? `${API_ROOT_URL}/${user.avatar}` : images} alt="user-dp" className="avatar" />
                   <span>{user.name}</span>
                 </Link>
               </li>
@@ -92,7 +94,8 @@ const Navbar = (props) => {
                   to={`/user/${friend.id}`}
                   onClick={() => setIsSidebarOpen(false)} // Close sidebar on click
                 >
-                  <img src={images} alt="friend-dp" />
+                 <img src={friend.avatar ? `${API_ROOT_URL}/${friend.avatar}` : images} alt="friend-dp" className="avatar" />
+
                   <span>{friend.name}</span>
                 </Link>
               </li>
@@ -134,7 +137,8 @@ const Navbar = (props) => {
           {/* This is the icon you click */}
           <div className="profile-icon-container" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {auth.isLoggedin ? (
-              <img src={images} alt="user-dp" id="user-dp" />
+             
+          <img src={auth.user.avatar ? `${API_ROOT_URL}/${auth.user.avatar}` : images} alt="user-dp" className="avatar" /> //
             ) : (
               <FaUserCircle className="guest-icon" />
             )}
@@ -190,6 +194,7 @@ const Navbar = (props) => {
 const mapStateToProps = (state) => ({
   auth: state.auth,
   results: state.search.results,
+  friends: state.friends
 });
 
 export default connect(mapStateToProps)(Navbar);
