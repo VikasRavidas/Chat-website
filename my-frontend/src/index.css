@@ -598,6 +598,7 @@ nav .nav-links ul li:hover {
 /* in index.css */
 .settings {
   display: flex; /* Changed from inline-flex to flex */
+  align-self: center;
   flex-direction: column;
   background: #fff;
   padding: 30px;
@@ -1000,4 +1001,14 @@ nav .nav-links ul li:hover {
     font-size: 0.95rem; /* Reduce text size */
     line-height: 1.4;
   }
+  .settings {
+  /* ✅ SET width to 90% of the viewport width */
+  width: 77vw; 
+
+  /* ✅ REDUCE the excessive internal padding */
+  padding: 1.5rem; /* A more reasonable padding (approx 24px) */
+  
+  /* ✅ CORRECT the margin to keep it centered */
+  margin: 50px auto 0;
+}
 }
