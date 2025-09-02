@@ -390,10 +390,6 @@ app.get("/api/v2/health-check", (req, res) => {
 
 // --- Start Server ---
 server.listen(PORT, () => {
-  // ...
-});
-// --- Start Server ---
-server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
